@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.intranet.mappers.ProfileMapper">
+    <resultMap id="profileResultMap" type="Profile">
+        <id property="id" column="id"/>
+        <result property="fullName" column="full_name"/>
+        <result property="email" column="email"/>
+        <result property="birthday" column="birthday"/>
+        <result property="phoneNumber" column="phone"/>
+        <result property="skype" column="skype"/>
+        <result property="aboutMe" column="about_me"/>
+        <result property="avatar" column="avatar"/>
+        <result property="role" column="role"/>
+    </resultMap>
+    <select id="getById" resultMap="profileResultMap">
+        select * from "user"
+        where "user".id = (#{id})
+    </select>
+    <update id="updateProfile">
+        update "user"
+        set
+        name = (#{name}),
+        surname = (#{surname}),
+        email = (#{email})
+        where
+        "user".id = (#{id})
+    </update>
+    <update id="updatePassword">
+        update "user"
+        set
+        password = (#{password})
+        where
+        "user".id = (#{id})
+    </update>
+    <update id="saveAvatar">
+        update "user"
+        set
+        avatar = (#{avatar})
+        where
+        "user".id = (#{id})
+    </update>
+</mapper>

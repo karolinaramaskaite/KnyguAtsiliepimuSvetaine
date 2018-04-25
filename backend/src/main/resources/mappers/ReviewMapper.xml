@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.intranet.mappers.ReviewMapper">
+    <insert id="insertReview" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into "review"(user_id, review, date, book_id)
+        values((#{userId}),(#{review}),(#{date}),(#{bookId}))
+    </insert>
+    <select id="getById" resultType="Review" >
+        select user_id as userId, review, date, book_id as bookId from "review"
+        where "review".id = (#{id})
+    </select>
+    <delete id="deleteReviewById">
+        delete from "review" where id=(#{id})
+    </delete>
+    <delete id="deleteUserReviews">
+        delete from "review" where user_id=(#{userId})
+    </delete>
+    <delete id="deleteBookReviews">
+        delete from "review" where book_id=(#{bookId})
+    </delete>
+    <select id="getBookReviews" resultType="com.project.intranet.requests.ReviewRequest" >
+        select r.id, r.user_id, r.review, r.date as time, r.book_id as bookId,
+        u.name as userName, u.surname as userSurname
+        from "review" r
+        inner join "user" u
+        on r.user_id = u.id
+        where r.book_id = (#{bookId})
+        order by r.id desc
+    </select>
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.intranet.mappers.BookMapper">
+    <insert id="insertBook" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into "book"(author_id, title, year, isbn, about, add_date)
+        values((#{authorId}),(#{title}),(#{year}),
+        (#{isbn}),(#{about}),(#{createdOn}))
+    </insert>
+    <update id="saveImage">
+        update "book"
+        set
+        image = (#{image})
+        where
+        "book".id = (#{id})
+    </update>
+    <update id="updateBook">
+        update "book"
+        set
+        title = (#{title}),
+        year = (#{year}),
+        isbn = (#{isbn}),
+        about = (#{about})
+        where
+        "book".id = (#{id})
+    </update>
+    <select id="findByTitleAndAuthor" resultType="Book" >
+        select author_id as authorId, title, id, about, year, add_date as createdOn, isbn from "book"
+        where "book".title = (#{title}) and "book".author_id = (#{authorId})
+    </select>
+    <delete id="delete">
+        delete from "book" where id=(#{id})
+    </delete>
+    <delete id="deleteByAuthor">
+        delete from "book" where author_id=(#{id})
+    </delete>
+    <select id="getById" resultType="com.project.intranet.requests.BookRequest" >
+        select b.title, b.id, b.about, b.year, b.image, b.add_date as createdOn, b.isbn, a.name as author from "book" b
+        inner join "author" a
+        on b.author_id = a.id
+        where b.id = (#{id})
+    </select>
+    <select id="getAllBooks" resultType="com.project.intranet.requests.BookRequest">
+        select b.title, b.id, b.about, b.year, b.image, b.add_date as createdOn, b.isbn, a.name as author from "book" b
+        inner join "author" a
+        on b.author_id = a.id
+        where (LOWER(b.title) like lower(concat(#{keyword}, '%')))
+        OR (LOWER(b.title) like lower(concat('%' ,#{keyword}, '%')))
+        OR (LOWER(b.title) like lower(concat('%',#{keyword})))
+        OR (LOWER(b.year) like lower(concat(#{keyword}, '%')))
+        OR (LOWER(b.year) like lower(concat('%' ,#{keyword}, '%')))
+        OR (LOWER(b.year) like lower(concat('%' ,#{keyword})))
+        OR (LOWER(b.isbn) like lower(concat(#{keyword}, '%')))
+        OR (LOWER(b.isbn) like lower(concat('%' ,#{keyword}, '%')))
+        OR (LOWER(b.isbn) like lower(concat('%' ,#{keyword})))
+        OR (LOWER(a.name) like lower(concat(#{keyword}, '%')))
+        OR (LOWER(a.name) like lower(concat('%' ,#{keyword}, '%')))
+        OR (LOWER(a.name) like lower(concat('%' ,#{keyword})))
+        order by b.id desc
+        <include refid="paging">
+            <property name="start" value="#{start}"/>
+            <property name="limit" value="#{limit}"/>
+        </include>
+    </select>
+    <sql id="paging">
+        <if test="limit != null">
+            limit ${limit}
+        </if>
+        <if test="start != null">
+            offset ${start}
+        </if>
+    </sql>
+</mapper>

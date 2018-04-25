@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.intranet.mappers.AuthorMapper">
+    <insert id="insertAuthor" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into "author"(name, biography)
+        values((#{name}),(#{biography}))
+    </insert>
+    <select id="findByName" resultType="Author" >
+        select id, name, biography from "author"
+        where "author".name = (#{name})
+    </select>
+    <select id="getId" resultType="int" >
+        select id from "author"
+        where "author".name = (#{name})
+    </select>
+    <delete id="delete">
+        delete from "author" where id=(#{id})
+    </delete>
+    <select id="getById" resultType="Author" >
+        select id, name, biography from "author"
+        where "author".id = (#{id})
+    </select>
+    <select id="getAllAuthors" resultType="Author">
+        select * from "author"
+        order by id desc
+        <include refid="paging">
+            <property name="start" value="#{start}"/>
+            <property name="limit" value="#{limit}"/>
+        </include>
+    </select>
+    <update id="updateAuthor">
+        update "author"
+        set
+        name = (#{name}),
+        biography = (#{biography})
+        where
+        "author".id = (#{id})
+    </update>
+    <update id="saveImage">
+        update "author"
+        set
+        image = (#{image})
+        where
+        "author".id = (#{id})
+    </update>
+    <sql id="paging">
+        <if test="limit != null">
+            limit ${limit}
+        </if>
+        <if test="start != null">
+            offset ${start}
+        </if>
+    </sql>
+</mapper>
